@@ -11,6 +11,9 @@ const studyLogElement = document.createElement('div');
 studyLogElement.id = 'studyLog';
 document.body.appendChild(studyLogElement);
 
+const pauseButton = document.getElementById('pause');
+const unpauseButton = document.getElementById('unpause');
+
 function startTimer(duration) {
     clearInterval(timerInterval);
     if (!isPaused) {
@@ -82,15 +85,27 @@ document.getElementById('startExam').addEventListener('click', () => {
     startTimer(8 * 3600);
 });
 
+document.getElementById('start3Hour').addEventListener('click', () => {
+    isPaused = false;
+    startTimer(3 * 3600); // 3-hour study mode
+});
+
 document.getElementById('pause').addEventListener('click', () => {
-    if (isPaused) {
-        studyStartTime = new Date();
-        isPaused = false;
-    } else {
+    if (!isPaused) {
         clearInterval(timerInterval);
         elapsedPausedTime += new Date() - studyStartTime;
         isPaused = true;
+        pauseButton.style.display = 'none';
+        unpauseButton.style.display = 'inline';
     }
+});
+
+document.getElementById('unpause').addEventListener('click', () => {
+    isPaused = false;
+    studyStartTime = new Date(); // Resync start time
+    pauseButton.style.display = 'inline';
+    unpauseButton.style.display = 'none';
+    startTimer(studyDuration - elapsedPausedTime / 1000); // Continue from where we left off
 });
 
 // Display the study log when the page loads
