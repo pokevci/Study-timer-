@@ -1,1 +1,2 @@
-# Study-timer-
+# Study-timer
+Study timer for personal use
