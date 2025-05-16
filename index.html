@@ -7,16 +7,46 @@
     <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
-    <h1>Study Timer</h1>
-    <button id="startStudy">Start 4-Hour Study</button>
-    <button id="startExam">Start 8-Hour Exam Mode</button>
-    <button id="start3Hour">Start 3-Hour Study</button>
-    <button id="pause">Pause</button>
-    <button id="unpause" style="display: none;">Unpause</button>
-    <div class="progress-bar">
-        <div class="progress" id="progress"></div>
+    <div class="container">
+        <h1>Study Timer</h1>
+        
+        <div class="mode-selector">
+            <button class="mode-btn active" id="pomodoro-btn">Pomodoro</button>
+            <button class="mode-btn" id="fatigue-btn">Fatigue Counter</button>
+        </div>
+        
+        <div class="timer-display" id="timer">25:00</div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="session-info" id="session-info">Focus Session</div>
+        
+        <div class="controls">
+            <button id="start-btn">Start</button>
+            <button id="pause-btn" disabled>Pause</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+        
+        <div class="settings">
+            <h3>Settings</h3>
+            <div class="setting-row">
+                <label for="focus-time">Focus Time (minutes):</label>
+                <input type="number" id="focus-time" min="1" value="25">
+            </div>
+            <div class="setting-row">
+                <label for="short-break">Short Break (minutes):</label>
+                <input type="number" id="short-break" min="1" value="5">
+            </div>
+            <div class="setting-row">
+                <label for="long-break">Long Break (minutes):</label>
+                <input type="number" id="long-break" min="1" value="15">
+            </div>
+        </div>
     </div>
-    <p id="timeRemaining"></p>
+
     <script src="assets/script.js"></script>
+
 </body>
 </html>
