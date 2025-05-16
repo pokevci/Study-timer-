@@ -28,9 +28,32 @@ h1 {
 .timer-display {
     font-size: 5rem;
     font-weight: bold;
-    margin: 20px 0;
+    margin: 10px 0;
     color: #2c3e50;
     font-family: 'Courier New', monospace;
+}
+
+.time-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.time-input input {
+    width: 60px;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 5px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+}
+
+.time-input span {
+    font-size: 2rem;
+    font-weight: bold;
 }
 
 .controls {

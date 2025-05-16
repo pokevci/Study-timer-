@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const timerDisplay = document.getElementById('timer');
+    const minutesInput = document.getElementById('minutes-input');
+    const secondsInput = document.getElementById('seconds-input');
     const startBtn = document.getElementById('start-btn');
     const pauseBtn = document.getElementById('pause-btn');
     const resetBtn = document.getElementById('reset-btn');
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentMode = 'pomodoro'; // 'pomodoro' or 'fatigue'
     let sessionType = 'focus'; // 'focus', 'shortBreak', 'longBreak'
     let sessionCount = 0;
+    let pausedTime = 0;
     
     // Initialize timer
     resetTimer();
@@ -32,12 +35,36 @@ document.addEventListener('DOMContentLoaded', function() {
     pomodoroBtn.addEventListener('click', () => switchMode('pomodoro'));
     fatigueBtn.addEventListener('click', () => switchMode('fatigue'));
     
+    // Time input validation
+    minutesInput.addEventListener('input', validateTimeInput);
+    secondsInput.addEventListener('input', validateTimeInput);
+    
     // Settings change listeners
     focusTimeInput.addEventListener('change', updateSettings);
     shortBreakInput.addEventListener('change', updateSettings);
     longBreakInput.addEventListener('change', updateSettings);
     
     // Functions
+    function validateTimeInput(e) {
+        const input = e.target;
+        let value = input.value.replace(/\D/g, '');
+        
+        if (value.length > 2) {
+            value = value.slice(0, 2);
+        }
+        
+        if (input === secondsInput && parseInt(value) > 59) {
+            value = '59';
+        }
+        
+        input.value = value.padStart(2, '0');
+        
+        if (!isRunning && !isPaused) {
+            timeLeft = (parseInt(minutesInput.value) * 60) + parseInt(secondsInput.value);
+            updateDisplay();
+        }
+    }
+    
     function switchMode(mode) {
         currentMode = mode;
         if (mode === 'pomodoro') {
@@ -55,17 +82,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function startTimer() {
-        if (isRunning && !isPaused) return;
+        if (isRunning) return;
         
-        if (!isRunning) {
+        if (isPaused) {
+            // Resuming from pause
+            timeLeft = pausedTime;
+            isPaused = false;
+        } else {
             // Starting fresh
             setTimerForCurrentSession();
         }
         
         isRunning = true;
-        isPaused = false;
         startBtn.disabled = true;
         pauseBtn.disabled = false;
+        resetBtn.disabled = false;
         
         timer = setInterval(() => {
             timeLeft--;
@@ -90,6 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isRunning) return;
         
         clearInterval(timer);
+        pausedTime = timeLeft;
         isPaused = true;
         isRunning = false;
         startBtn.disabled = false;
@@ -103,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         isPaused = false;
         startBtn.disabled = false;
         pauseBtn.disabled = true;
+        resetBtn.disabled = false;
         startBtn.textContent = 'Start';
         sessionCount = 0;
         sessionType = 'focus';
@@ -122,12 +155,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 totalTime = parseInt(longBreakInput.value) * 60;
                 sessionInfo.textContent = 'Long Break';
             }
-        } else { // Fatigue counter mode
+        } else { // Fatigue counter mode (Ultradian rhythm)
             if (sessionType === 'focus') {
-                totalTime = 90 * 60; // 90 minutes
+                totalTime = 90 * 60; // 90 minutes focus
                 sessionInfo.textContent = 'Deep Work Session';
             } else {
-                totalTime = 20 * 60; // 20 minutes
+                totalTime = 30 * 60; // 30 minutes break (research suggests 20-30 min)
                 sessionInfo.textContent = 'Recovery Break';
             }
         }
@@ -148,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 sessionType = 'focus';
             }
-        } else { // Fatigue counter mode
+        } else { // Fatigue counter mode (Ultradian rhythm)
             sessionType = sessionType === 'focus' ? 'shortBreak' : 'focus';
         }
         
@@ -168,6 +201,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
         timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Update time inputs when not running
+        if (!isRunning && !isPaused) {
+            minutesInput.value = minutes.toString().padStart(2, '0');
+            secondsInput.value = seconds.toString().padStart(2, '0');
+        }
         
         // Update progress bar
         const progress = ((totalTime - timeLeft) / totalTime) * 100;

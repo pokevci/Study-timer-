@@ -12,10 +12,16 @@
         
         <div class="mode-selector">
             <button class="mode-btn active" id="pomodoro-btn">Pomodoro</button>
-            <button class="mode-btn" id="fatigue-btn">Fatigue Counter</button>
+            <button class="mode-btn" id="fatigue-btn">Ultradian</button>
         </div>
         
         <div class="timer-display" id="timer">25:00</div>
+        
+        <div class="time-input">
+            <input type="text" id="minutes-input" value="25" maxlength="2">
+            <span>:</span>
+            <input type="text" id="seconds-input" value="00" maxlength="2">
+        </div>
         
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
@@ -47,6 +53,5 @@
     </div>
 
     <script src="assets/script.js"></script>
-
 </body>
 </html>
